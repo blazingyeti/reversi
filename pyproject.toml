@@ -4,14 +4,14 @@ version = "0.1.0"
 description = "A simple reversi game in pygame"
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = ["pygame-ce>=2.5.3"]
 
 [project.urls]
 Repository = "https://github.com/natethor/reversi"
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy"]
+dev = ["ruff", "mypy", "build", "pyinstaller"]
 
 [build-system]
 requires = ["setuptools"]
@@ -20,10 +20,13 @@ build-backend = "setuptools.build_meta"
 [project.scripts]
 reversi = "reversi.main:main"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 indent-width = 4
-line-length = 95
+line-length = 100
 exclude = ["*.json"]
 
 [tool.ruff.lint]
@@ -36,7 +39,7 @@ quote-style = "double"
 
 [tool.mypy]
 disallow_untyped_defs = true
-python_version = "3.12"
+python_version = "3.13"
 warn_return_any = true
 strict = true
 disallow_incomplete_defs = true
