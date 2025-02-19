@@ -8,7 +8,7 @@ requires-python = ">=3.13"
 dependencies = ["pygame-ce>=2.5.3"]
 
 [project.urls]
-Repository = "https://github.com/natethor/reversi"
+Repository = "https://github.com/blazingyeti/reversi"
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "build", "pyinstaller"]
@@ -18,10 +18,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts]
-reversi = "reversi.main:main"
+reversi = "src.main:main"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = {"" = "."}
 
 [tool.ruff]
 target-version = "py313"

@@ -2,9 +2,10 @@
 
 venv:
 	python -m venv .venv
+	. .venv/bin/activate && python -m pip install --upgrade pip
 
 install: venv
-	python -m pip install -e ".[dev]"
+	. .venv/bin/activate && python -m pip install -e ".[dev]"
 
 lint:
 	ruff check .
@@ -34,4 +35,4 @@ build:
 		--distpath dist/exe \
 		--collect-all pygame \
 		--add-binary '/opt/homebrew/opt/gettext/lib/libintl.8.dylib:pygame/.dylibs/' \
-		src/reversi/main.py
+		src/main.py
