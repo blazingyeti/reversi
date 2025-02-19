@@ -27,6 +27,17 @@ class Game:
     HIGHLIGHT_COLOR: Final[tuple[int, int, int]] = (0, 120, 0)
     CURSOR_COLOR: Final[tuple[int, int, int]] = (255, 255, 0)
 
+    DIRECTIONS: Final[list[tuple[int, int]]] = [
+        (-1, -1),  # Northwest
+        (-1, 0),  # North
+        (-1, 1),  # Northeast
+        (0, -1),  # West
+        (0, 1),  # East
+        (1, -1),  # Southwest
+        (1, 0),  # South
+        (1, 1),  # Southeast
+    ]
+
     def __init__(self) -> None:
         pygame.init()
         self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
@@ -54,11 +65,59 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left click
+                    mouse_pos = pygame.mouse.get_pos()
+                    row, col = self.get_board_position(mouse_pos)
+                    if row != -1 and col != -1:  # Valid board position
+                        if self.is_valid_move(row, col, self.current_player):
+                            # Place piece
+                            self.board[row][col] = self.current_player
+
+                            # Flip captured pieces
+                            self.flip_pieces(row, col, self.current_player)
+
+                            # Switch player
+                            self.switch_player()
         return True
 
     def update(self) -> None:
         """Update game state"""
         pass
+
+    def switch_player(self) -> None:
+        """Switch to the other player's turn"""
+        if self.current_player == Player.RED:
+            self.current_player = Player.BLUE
+        else:
+            self.current_player = Player.RED
+
+    def flip_pieces(self, row: int, col: int, player: Player) -> None:
+        """Flip captured pieces after a move"""
+        opponent = Player.BLUE if player == Player.RED else Player.RED
+
+        for dx, dy in self.DIRECTIONS:
+            to_flip = []
+            x, y = row + dx, col + dy
+
+            # Look for opponents pieces
+            while (
+                0 <= x < self.BOARD_SIZE
+                and 0 <= y < self.BOARD_SIZE
+                and self.board[x][y] == opponent
+            ):
+                to_flip.append((x, y))
+                x, y = x + dx, y + dy
+
+            # If we found opponent pieces and hit one of our pieces, flip them
+            if (
+                to_flip
+                and 0 <= x < self.BOARD_SIZE
+                and 0 <= y < self.BOARD_SIZE
+                and self.board[x][y] == player
+            ):
+                for flip_row, flip_col in to_flip:
+                    self.board[flip_row][flip_col] = player
 
     def get_board_position(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
         """Convert mouse position to board position"""
@@ -82,12 +141,9 @@ class Game:
         if self.board[row][col] != Player.EMPTY:
             return False
 
-        # Check all 8 directions
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-
         opponent = Player.BLUE if player == Player.RED else Player.RED
 
-        for dx, dy in directions:
+        for dx, dy in self.DIRECTIONS:
             x, y = row + dx, col + dy
             # Look for opponent's pieces
             if (
