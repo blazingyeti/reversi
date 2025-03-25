@@ -10,7 +10,7 @@ dependencies = ["pygame-ce>=2.5.3"]
 [project.urls]
 Repository = "https://github.com/blazingyeti/reversi"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = ["ruff", "mypy", "build", "pyinstaller"]
 
 [build-system]
